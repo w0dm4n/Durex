@@ -90,12 +90,8 @@ void Durex::startTrojan()
 			if (new_pid == 0) {
 				std::cout << "slt vasi tinfect le system stp" << std::endl;
 				while (true);
-			} else if (new_pid > 0) {
-				exit(0);
 			}
 		}
-	} else if (pid > 0) {
-		exit (0);
 	}
 }
 

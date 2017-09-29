@@ -17,7 +17,7 @@ NAMEBASE    =   $(shell basename $(NAME))
 LENGTHNAME	=	`printf "%s" $(NAMEBASE) | wc -c`
 MAX_COLS	=	$$(echo "$$(tput cols)-24-$(LENGTHNAME)"|bc)
 
-CC			=	g++ -L /usr/local/lib/ -L /usr/lib/ -lboost_system -lboost_filesystem -std=c++11 -lpthread
+CC			=	g++ -L /usr/lib/ -lboost_system -lboost_filesystem -std=c++11 -lpthread
 FLAGS_O		=
 
 SRCDIR_DUREX		=	srcs/
