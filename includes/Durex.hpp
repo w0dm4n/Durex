@@ -3,6 +3,8 @@
 
 #include "all.hpp"
 #include "Environment.hpp"
+#include "Service.hpp"
+#include "Utils.hpp"
 class Durex
 {
 	public:

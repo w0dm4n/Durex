@@ -21,9 +21,8 @@
 # include <stdio.h>
 # include <string.h>
 # include <unistd.h>
-# include <boost/filesystem.hpp>
-# include <boost/algorithm/string.hpp>
 # include <signal.h>
 # include <sys/select.h>
 # include <thread>
+# include <vector>
 #endif

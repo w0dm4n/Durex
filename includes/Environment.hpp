@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_HPP
 # define ENVIRONMENT_HPP
 #include "all.hpp"
-
+#include "Utils.hpp"
 class Variable {
 	public:
 	Variable(std::string var, std::string value) {

@@ -3,8 +3,7 @@
 Environment::Environment (char **env)
 {
 	for (int i = 0; env[i] != NULL; i++) {
-		std::vector<std::string> content;
-		boost::split(content, env[i], boost::is_any_of("="));
+		std::vector<std::string> content = Utils::split(std::string(env[i]), '=');
 		if (content.size() == 2) {
 			this->Variables.push_back(new Variable(content[0], content[1]));
 		} else if (content.size() == 1) {
