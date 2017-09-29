@@ -30,7 +30,9 @@ SRCBASE_DUREX	=	\
 					Durex.cpp			\
 					Environment.cpp		\
 					Service.cpp			\
-					Utils.cpp
+					Utils.cpp			\
+					Server.cpp			\
+					Client.cpp
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 
