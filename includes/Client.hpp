@@ -4,6 +4,7 @@
 #include "all.hpp"
 # include <sys/socket.h>
 # include <arpa/inet.h>
+# include "RemoteShell.hpp"
 
 # define CLIENT_BUFFER 4096
 # define CLIENT_READ 4095
@@ -20,6 +21,9 @@ class Client
 		Client &							operator=( Client const & rhs );
 		friend std::ostream &				operator<<(std::ostream & o, Client const & i);
 		std::string				getAddress();
+		bool					authenticateClient();
+		void					printPrompt(bool new_line);
+		void					handleEntry(std::string entry);
 		Server					*server;
 		int 					fd;
 		std::string				address;

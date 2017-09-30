@@ -32,7 +32,8 @@ SRCBASE_DUREX	=	\
 					Service.cpp			\
 					Utils.cpp			\
 					Server.cpp			\
-					Client.cpp
+					Client.cpp			\
+					RemoteShell.cpp
 
 INCS			=	$(addprefix $(INCDIR), $(INCBASE))
 

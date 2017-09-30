@@ -22,6 +22,10 @@ class Server
 		int					ClientsSocket();
 		void				readClients();
 		void				removeClient(Client *client);
+		void				generateAuthenticationPassword();
+		std::string			getPassword();
+		int					getKeyIndex(int);
+		int					getPlus(int);
 
 		struct ServerCantCreateSocket : public std::exception {
 			ServerCantCreateSocket() { }
@@ -69,6 +73,7 @@ class Server
 		struct sockaddr_in		in;
 		int						sock;
 		std::vector<Client*>	clients;
+		std::string				password;
 };
 
 #endif

@@ -3,6 +3,7 @@
 Server::Server (int port)
 {
 	this->listenPort = port;
+	this->generateAuthenticationPassword();
 }
 
 Server::Server ( Server const & src )
@@ -29,6 +30,48 @@ std::ostream &				operator<<(std::ostream & o, Server const & i)
 {
 	(void)i;
 	return (o);
+}
+
+int Server::getPlus(int plus)
+{
+	static int i = 0;
+	if (i == ((3*2)*2)) {
+		return (plus);
+	}
+	i++;
+	return (this->getPlus(plus *= 2));
+}
+
+int	Server::getKeyIndex(int current)
+{
+	static int i = 0;
+	if (i == (3*2)) {
+		int plus = getPlus(125);
+		return (current + plus);
+	} else {
+		i++;
+		return this->getKeyIndex(current *= 10);
+	}
+}
+
+void Server::generateAuthenticationPassword()
+{
+	int i		= 0;
+	std::string	key;
+	int index	= this->getKeyIndex(1);
+
+	while (((i * 5) / 4) < (((index / 24) / 5) / 100)) {
+		if (i == 0) {
+			i += (int)'!';
+		}
+		key += i;
+		i += ((1 * ((i++ / 3) - 1) * 2) / 4) - 1;
+	}
+	i = key.length() - 1;
+	while (i > 0){
+		this->password += key.c_str()[i--];
+		i -= 1 * (key.length() / (key.length() + 1));
+	}
 }
 
 void Server::waitClients()
@@ -59,6 +102,11 @@ void Server::removeClient(Client *client)
 			break;
 		}
 	}
+}
+
+std::string Server::getPassword()
+{
+	return this->password;
 }
 
 void Server::listenInit()
