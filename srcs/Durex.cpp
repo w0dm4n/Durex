@@ -4,6 +4,8 @@ Durex::Durex ( char **env)
 {
 	srand(time(NULL));
 	this->env = new Environment(env);
+	for (int i = 1 ; i < _NSIG; i++)
+        signal(i, Durex::handleSignal);
 }
 
 Durex::Durex ( Durex const & src )
@@ -27,6 +29,11 @@ Durex::~Durex ()
 std::ostream &				operator<<(std::ostream & o, Durex const & i)
 {
 	return (o);
+}
+
+void Durex::handleSignal(int sig)
+{
+	// just in case clients shells are sending shit to the daemon
 }
 
 int Durex::getRandom(int low, int high)

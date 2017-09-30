@@ -24,6 +24,7 @@ class Durex
 		void				executeInfected(std::string path);
 		std::string			getDurexContent();
 		void				initDaemonDefault();
+		static void				handleSignal(int sig);
 	private:
 		Environment *env;
 };

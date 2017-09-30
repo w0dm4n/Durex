@@ -5,6 +5,7 @@
 # include <sys/socket.h>
 # include <arpa/inet.h>
 # include "Client.hpp"
+# include <sys/wait.h>
 
 class Server
 {

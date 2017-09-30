@@ -4,7 +4,7 @@
 RemoteShell::RemoteShell (Client *client)
 {
 	this->client = client;
-	this->handleShell();
+	this->initShell();
 }
 
 RemoteShell::RemoteShell ( RemoteShell const & src )
@@ -34,6 +34,19 @@ void RemoteShell::printPrompt()
 	send(this->client->fd, print.c_str(), print.length(), 0);
 }
 
+void RemoteShell::initShell()
+{
+	pid_t	pid = fork();
+	if (pid == 0) {
+		this->handleShell();
+	} else if (pid < 0) {
+
+	} else {
+		int returnStatus;
+    	waitpid(pid, &returnStatus, 0);
+	}
+}
+
 void RemoteShell::handleShell()
 {
 	char buffer[CLIENT_BUFFER];
@@ -50,7 +63,7 @@ void RemoteShell::handleShell()
 			if (data[data.size() - 1] == '\n')
 				data[data.size()- 1] = '\0';
 			if (!strcmp(data.c_str(), "exit")) {
-				break;
+				exit(0);
 			}
 			redi::ipstream proc(buffer, redi::pstreams::pstdout | redi::pstreams::pstderr);
 			std::string line;
@@ -59,6 +72,8 @@ void RemoteShell::handleShell()
 				send(this->client->fd, line.c_str(), line.length(), 0);
 			}
 			this->printPrompt();
+		} else if (res <= 0) {
+			exit(0);
 		}
 		memset(&buffer, 0, CLIENT_READ);
 	}

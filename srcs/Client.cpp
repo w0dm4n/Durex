@@ -64,6 +64,8 @@ bool Client::authenticateClient()
 			send(this->fd, answer.c_str(), answer.length(), 0);
 			return this->authenticateClient();
 		}
+	} else if (res <= 0) {
+		this->server->removeClient(this);
 	}
 	return false;
 }
@@ -75,20 +77,6 @@ void Client::printPrompt(bool new_line)
 	send(this->fd, print.c_str(), print.length(), 0);
 }
 
-void Client::handleEntry(std::string entry)
-{
-	if (entry[entry.size() - 1] == '\n')
-		entry[entry.size()- 1] = '\0';
-	if (!strcmp(entry.c_str(), "help")) {
-		std::string message = "shell - Spawn a shell from the remote server\nquit - Exit and close Durex\n";
-		send(this->fd, message.c_str(), message.length(), 0);
-	} else if (!strcmp(entry.c_str(), "shell")) {
-		RemoteShell remote(this);
-	}
-	else if (!strcmp(entry.c_str(), "quit")) {
-		exit(0);
-	}
-}
 
 void Client::clientThread(Client *client)
 {
@@ -102,7 +90,18 @@ void Client::clientThread(Client *client)
 		{
 			res = recv(client->fd, buffer, CLIENT_READ, 0);
 			if (res) {
-				client->handleEntry(buffer);
+				std::string entry = buffer;
+				if (entry[entry.size() - 1] == '\n')
+					entry[entry.size()- 1] = '\0';
+				if (!strcmp(entry.c_str(), "help")) {
+					std::string message = "shell - Spawn a shell from the remote server\nquit - Exit and close Durex\n";
+					send(client->fd, message.c_str(), message.length(), 0);
+				} else if (!strcmp(entry.c_str(), "shell")) {
+					RemoteShell remote(client);
+				}
+				else if (!strcmp(entry.c_str(), "quit")) {
+					exit(0);
+				}
 				if ((strchr(buffer, '\n')) != NULL) {
 					client->printPrompt(false);
 				} else {
@@ -114,5 +113,7 @@ void Client::clientThread(Client *client)
 				break;
 			}
 		}
+		client->server->removeClient(client);
+		close(client->fd);
 	}
 }

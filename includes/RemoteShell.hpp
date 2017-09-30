@@ -13,6 +13,7 @@ class RemoteShell
 		virtual	~RemoteShell();
 		void	handleShell();
 		void	printPrompt();
+		void	initShell();
 
 		RemoteShell &							operator=( RemoteShell const & rhs );
 		friend std::ostream &				operator<<(std::ostream & o, RemoteShell const & i);

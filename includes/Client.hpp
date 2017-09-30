@@ -23,7 +23,6 @@ class Client
 		std::string				getAddress();
 		bool					authenticateClient();
 		void					printPrompt(bool new_line);
-		void					handleEntry(std::string entry);
 		Server					*server;
 		int 					fd;
 		std::string				address;
