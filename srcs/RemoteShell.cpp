@@ -47,11 +47,66 @@ void RemoteShell::initShell()
 	}
 }
 
+std::string RemoteShell::getAbovePath()
+{
+	int				end	= this->path.length() - 1;
+	std::string		above;
+
+	while (end) {
+		if (this->path[end] == '/') {
+			break;
+		}
+		end--;
+	}
+	for (int i = 0; i < end; i++) {
+		above += this->path[i];
+	}
+
+	return (above.length() > 0) ? above : "/";
+}
+
+bool RemoteShell::pathExist(std::string path)
+{
+	struct stat statStruct;
+	stat(path.c_str(), &statStruct);
+
+	if (S_ISDIR(statStruct.st_mode)) {
+	    return true;
+	} else {
+		return false;
+	}
+}
+
+void RemoteShell::handleChdir(std::string buf)
+{
+	char *position = strstr((char*)buf.c_str(), "cd");
+	if (position != NULL) {
+		std::vector<std::string> path = Utils::split(position, ' ');
+		if (path.size() >= 2 && strcmp(path[1].c_str(), ".")) {
+			std::string new_path = path[1];
+			if (new_path[0] == '/' && this->pathExist(new_path)) {
+				this->path = new_path;
+			} else if (!strcmp(new_path.c_str(), "..")) {
+				this->path = this->getAbovePath();
+			} else {
+				if (this->path.length() > 1 && this->pathExist(this->path + "/" + new_path)) {
+					this->path = this->path + "/" + new_path;
+				}
+				else if (this->pathExist(this->path + new_path)) {
+					this->path += new_path;
+				}
+			}
+		}
+	}
+	chdir(this->path.c_str());
+}
+
 void RemoteShell::handleShell()
 {
 	char buffer[CLIENT_BUFFER];
 	int res = 0;
 
+	this->path = "/"; // start path on the remote shell
 	this->printPrompt();
 	memset(&buffer, 0, CLIENT_READ);
 	while (true)
@@ -61,7 +116,8 @@ void RemoteShell::handleShell()
 		{
 			std::string data = buffer;
 			if (data[data.size() - 1] == '\n')
-				data[data.size()- 1] = '\0';
+				data[data.size() - 1] = '\0';
+			this->handleChdir(data);
 			if (!strcmp(data.c_str(), "exit")) {
 				exit(0);
 			}

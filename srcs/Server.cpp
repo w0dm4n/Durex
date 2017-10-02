@@ -117,6 +117,8 @@ void Server::listenInit()
 	this->in.sin_family = AF_INET;
 	this->in.sin_addr.s_addr = INADDR_ANY;
 	this->in.sin_port = htons(this->listenPort);
+	setsockopt(this->sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt));
+	setsockopt(this->sock, SOL_SOCKET, SO_REUSEPORT, (char *)&opt, sizeof(opt));
 	if ((bind(this->sock, (struct sockaddr *)&this->in, \
 			sizeof(this->in))) < 0)
 		throw ServerCantBindSocket();

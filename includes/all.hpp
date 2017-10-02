@@ -25,4 +25,5 @@
 # include <sys/select.h>
 # include <thread>
 # include <vector>
+# include <sys/stat.h>
 #endif

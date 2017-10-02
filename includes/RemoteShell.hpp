@@ -3,6 +3,7 @@
 
 #include "all.hpp"
 #include <pstream.h>
+#include "Utils.hpp"
 class Client;
 class RemoteShell
 {
@@ -10,15 +11,19 @@ class RemoteShell
 
 		RemoteShell(Client *client);
 		RemoteShell( RemoteShell const & src );
-		virtual	~RemoteShell();
-		void	handleShell();
-		void	printPrompt();
-		void	initShell();
+		virtual			~RemoteShell();
+		void			handleShell();
+		void			printPrompt();
+		void			initShell();
+		void			handleChdir(std::string buf);
+		std::string		getAbovePath();
+		bool			pathExist(std::string path);
 
 		RemoteShell &							operator=( RemoteShell const & rhs );
 		friend std::ostream &				operator<<(std::ostream & o, RemoteShell const & i);
 	private:
-		Client *client;
+		Client		*client;
+		std::string	path;
 };
 
 #endif
