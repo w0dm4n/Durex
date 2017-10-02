@@ -15,7 +15,7 @@ class RemoteShell
 		void			handleShell();
 		void			printPrompt();
 		void			initShell();
-		void			handleChdir(std::string buf);
+		bool			handleChdir(std::string buf);
 		std::string		getAbovePath();
 		bool			pathExist(std::string path);
 

@@ -9,14 +9,10 @@ Server::Server (int port)
 Server::Server ( Server const & src )
 {
 	*this = src;
-	return ;
 }
 
 Server &				Server::operator=( Server const & rhs )
 {
-	if (this != &rhs)
-	{
-	}
 	return (*this);
 }
 
@@ -28,7 +24,6 @@ Server::~Server ( void )
 
 std::ostream &				operator<<(std::ostream & o, Server const & i)
 {
-	(void)i;
 	return (o);
 }
 

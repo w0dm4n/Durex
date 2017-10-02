@@ -77,7 +77,7 @@ bool RemoteShell::pathExist(std::string path)
 	}
 }
 
-void RemoteShell::handleChdir(std::string buf)
+bool RemoteShell::handleChdir(std::string buf)
 {
 	char *position = strstr((char*)buf.c_str(), "cd");
 	if (position != NULL) {
@@ -97,14 +97,19 @@ void RemoteShell::handleChdir(std::string buf)
 				}
 			}
 		}
+		return true;
 	}
 	chdir(this->path.c_str());
+	return false;
 }
 
 void RemoteShell::handleShell()
 {
-	char buffer[CLIENT_BUFFER];
-	int res = 0;
+	char			buffer[CLIENT_BUFFER];
+	int				res = 0;
+	char			buf[1024];
+	std::streamsize	n;
+	bool			change_dir = false;
 
 	this->path = "/"; // start path on the remote shell
 	this->printPrompt();
@@ -117,16 +122,45 @@ void RemoteShell::handleShell()
 			std::string data = buffer;
 			if (data[data.size() - 1] == '\n')
 				data[data.size() - 1] = '\0';
-			this->handleChdir(data);
+			change_dir = this->handleChdir(data);
 			if (!strcmp(data.c_str(), "exit")) {
 				exit(0);
 			}
-			redi::ipstream proc(buffer, redi::pstreams::pstdout | redi::pstreams::pstderr);
-			std::string line;
-			while (std::getline(proc.out(), line)) {
-				line += "\n";
-				send(this->client->fd, line.c_str(), line.length(), 0);
+			redi::ipstream child(buffer, redi::pstreams::pstdout | redi::pstreams::pstderr);
+			std::string out;
+			std::string err;
+			bool finished[2] = { false, false };
+
+			while (!finished[0] || !finished[1])
+			{
+			    if (!finished[0])
+			    {
+			        while ((n = child.err().readsome(buf, sizeof(buf))) > 0) {
+						if (!change_dir) {
+					    	send(this->client->fd, &buf, n, 0);
+						}
+					}
+			        if (child.eof())
+			        {
+			            finished[0] = true;
+			            if (!finished[1])
+			                child.clear();
+			        }
+			    }
+
+			    if (!finished[1])
+			    {
+			        while ((n = child.out().readsome(buf, sizeof(buf))) > 0)
+			            send(this->client->fd, &buf, n, 0);
+			        if (child.eof())
+			        {
+			            finished[1] = true;
+			            if (!finished[0])
+			                child.clear();
+			        }
+			    }
 			}
+			memset(&buf, 0, 1023);
 			this->printPrompt();
 		} else if (res <= 0) {
 			exit(0);
