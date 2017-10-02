@@ -6,6 +6,8 @@
 # include <arpa/inet.h>
 # include "Client.hpp"
 # include <sys/wait.h>
+# include "Server.hpp"
+# include "Service.hpp"
 
 class Server
 {

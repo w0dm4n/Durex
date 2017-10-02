@@ -19,7 +19,6 @@ class Durex
 		bool 				isInSystemBinaryPath();
 		void 				startTrojan();
 		void				infectSystem();
-		std::string 		getCurrentPath();
 		int					getRandom(int low, int high);
 		void				executeInfected(std::string path);
 		std::string			getDurexContent();

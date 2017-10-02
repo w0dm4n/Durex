@@ -41,3 +41,13 @@ std::vector<std::string> Utils::split(const std::string &s, char delim) {
 	Utils::split(s, delim, std::back_inserter(elems));
 	return elems;
 }
+
+std::string Utils::getCurrentPath()
+{
+    char arg1[20];
+    char exe_path[PATH_MAX + 1] = { 0 };
+
+    sprintf(arg1, "/proc/%d/exe", getpid());
+    readlink(arg1, exe_path, 1024);
+    return std::string(exe_path);
+}
