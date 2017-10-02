@@ -33,7 +33,12 @@ void Service::initService()
 	std::string		service_path = "/etc/init.d/" + service_name;
 
 	std::fstream	file;
+
+	// in case durex was already started somewhere else
+	std::string delete_service = "update-rc.d -f " + service_name + " remove";
+	system(delete_service.c_str());
 	unlink(service_path.c_str());
+
 	file.open(service_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if (file.is_open()) {
 		file << templateContent;
