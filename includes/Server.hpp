@@ -8,6 +8,7 @@
 # include <sys/wait.h>
 # include "Server.hpp"
 # include "Service.hpp"
+# include "ProcessHider.hpp"
 
 class Server
 {

